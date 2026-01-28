@@ -982,8 +982,18 @@ export default function VoodooBracket() {
         </>
       ) : (
         /* Desktop Bracket View */
-        <div style={{ overflowX: 'auto', padding: '10px 20px' }}>
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', minWidth: 'max-content' }}>
+        <div style={{ 
+          overflowX: 'auto', 
+          padding: '10px 20px',
+          display: 'flex',
+          justifyContent: 'center',
+        }}>
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'flex-start', 
+            gap: '8px', 
+            minWidth: 'max-content',
+          }}>
             {/* Left Side - South & East */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               <RegionBracket
