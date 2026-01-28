@@ -41,7 +41,6 @@ const ROUNDS = [
 ]
 
 // Current top 64 teams (January 2026 - based on AP Poll + Bracketology)
-// Organized by region with proper 1-16 seeding
 const REGIONS = {
   south: [
     { seed: 1, name: 'Arizona', record: '20-0' },
@@ -54,7 +53,7 @@ const REGIONS = {
     { seed: 13, name: 'Vermont', record: '17-5' },
     { seed: 6, name: 'Arkansas', record: '15-5' },
     { seed: 11, name: 'Texas A&M', record: '13-7' },
-    { seed: 3, name: 'Michigan State', record: '18-2' },
+    { seed: 3, name: 'Michigan St', record: '18-2' },
     { seed: 14, name: 'Colgate', record: '16-4' },
     { seed: 7, name: 'Vanderbilt', record: '17-3' },
     { seed: 10, name: 'NC State', record: '14-6' },
@@ -86,7 +85,7 @@ const REGIONS = {
     { seed: 9, name: 'Georgia', record: '14-6' },
     { seed: 5, name: 'Texas Tech', record: '16-4' },
     { seed: 12, name: 'Drake', record: '17-5' },
-    { seed: 4, name: 'North Carolina', record: '16-4' },
+    { seed: 4, name: 'N Carolina', record: '16-4' },
     { seed: 13, name: 'Akron', record: '16-4' },
     { seed: 6, name: 'Florida', record: '14-6' },
     { seed: 11, name: 'Xavier', record: '13-7' },
@@ -105,7 +104,7 @@ const REGIONS = {
     { seed: 5, name: 'Saint Mary\'s', record: '17-4' },
     { seed: 12, name: 'Grand Canyon', record: '17-4' },
     { seed: 4, name: 'Wisconsin', record: '15-5' },
-    { seed: 13, name: 'South Dakota St', record: '16-6' },
+    { seed: 13, name: 'S Dakota St', record: '16-6' },
     { seed: 6, name: 'Villanova', record: '14-6' },
     { seed: 11, name: 'VCU', record: '15-5' },
     { seed: 3, name: 'UCLA', record: '15-5' },
@@ -117,12 +116,10 @@ const REGIONS = {
   ],
 }
 
-// Build initial matchups for 64-team bracket
 function buildInitialMatchups(): Matchup[] {
   const matchups: Matchup[] = []
   const regions = ['south', 'east', 'midwest', 'west'] as const
   
-  // Round of 64 (32 games)
   regions.forEach((region) => {
     const teams = REGIONS[region]
     for (let i = 0; i < 8; i++) {
@@ -137,7 +134,6 @@ function buildInitialMatchups(): Matchup[] {
     }
   })
 
-  // Round of 32 (16 games)
   regions.forEach((region) => {
     for (let i = 0; i < 4; i++) {
       matchups.push({
@@ -151,7 +147,6 @@ function buildInitialMatchups(): Matchup[] {
     }
   })
 
-  // Sweet 16 (8 games)
   regions.forEach((region) => {
     for (let i = 0; i < 2; i++) {
       matchups.push({
@@ -165,7 +160,6 @@ function buildInitialMatchups(): Matchup[] {
     }
   })
 
-  // Elite 8 (4 games)
   regions.forEach((region) => {
     matchups.push({
       id: `e8-${region}`,
@@ -177,7 +171,6 @@ function buildInitialMatchups(): Matchup[] {
     })
   })
 
-  // Final Four (2 games)
   matchups.push({
     id: 'f4-1',
     team1: null,
@@ -195,7 +188,6 @@ function buildInitialMatchups(): Matchup[] {
     region: 'midwest-west',
   })
 
-  // Championship
   matchups.push({
     id: 'championship',
     team1: null,
@@ -207,18 +199,17 @@ function buildInitialMatchups(): Matchup[] {
   return matchups
 }
 
-function TeamSlot({ 
+// Compact team slot for bracket view
+function BracketTeamSlot({ 
   team, 
   isWinner, 
   onClick,
   isClickable,
-  compact = false,
 }: { 
   team: Team | null
   isWinner: boolean
   onClick?: () => void
   isClickable: boolean
-  compact?: boolean
 }) {
   return (
     <div
@@ -226,8 +217,322 @@ function TeamSlot({
       style={{
         display: 'flex',
         alignItems: 'center',
-        gap: compact ? '8px' : '10px',
-        padding: compact ? '8px 10px' : '10px 12px',
+        gap: '6px',
+        padding: '4px 8px',
+        background: isWinner 
+          ? `linear-gradient(135deg, ${VOODOO_COLORS.lime}25, ${VOODOO_COLORS.lime}10)`
+          : VOODOO_COLORS.darkGray,
+        border: `1px solid ${isWinner ? VOODOO_COLORS.lime : VOODOO_COLORS.charcoal}`,
+        borderRadius: '4px',
+        cursor: isClickable ? 'pointer' : 'default',
+        transition: 'all 0.15s ease',
+        boxShadow: isWinner ? `0 0 8px ${VOODOO_COLORS.limeGlow}` : 'none',
+        height: '24px',
+        minWidth: '120px',
+        maxWidth: '140px',
+      }}
+      onMouseEnter={(e) => {
+        if (isClickable && !isWinner) {
+          e.currentTarget.style.borderColor = VOODOO_COLORS.orange
+          e.currentTarget.style.background = VOODOO_COLORS.charcoal
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (!isWinner) {
+          e.currentTarget.style.borderColor = VOODOO_COLORS.charcoal
+          e.currentTarget.style.background = VOODOO_COLORS.darkGray
+        }
+      }}
+    >
+      {team ? (
+        <>
+          <span style={{
+            fontSize: '9px',
+            fontWeight: 'bold',
+            color: VOODOO_COLORS.purple,
+            minWidth: '14px',
+          }}>
+            {team.seed}
+          </span>
+          <span style={{
+            color: isWinner ? VOODOO_COLORS.lime : VOODOO_COLORS.white,
+            fontWeight: isWinner ? 'bold' : 'normal',
+            fontSize: '10px',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}>
+            {team.name}
+          </span>
+        </>
+      ) : (
+        <span style={{ color: VOODOO_COLORS.gray, fontSize: '9px' }}>TBD</span>
+      )}
+    </div>
+  )
+}
+
+// Bracket matchup (two teams stacked)
+function BracketMatchup({ 
+  matchup, 
+  onSelectWinner,
+}: { 
+  matchup: Matchup
+  onSelectWinner: (team: Team) => void
+}) {
+  return (
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '2px',
+    }}>
+      <BracketTeamSlot 
+        team={matchup.team1} 
+        isWinner={matchup.winner?.name === matchup.team1?.name}
+        onClick={() => matchup.team1 && onSelectWinner(matchup.team1)}
+        isClickable={!!matchup.team1 && !!matchup.team2}
+      />
+      <BracketTeamSlot 
+        team={matchup.team2} 
+        isWinner={matchup.winner?.name === matchup.team2?.name}
+        onClick={() => matchup.team2 && onSelectWinner(matchup.team2)}
+        isClickable={!!matchup.team1 && !!matchup.team2}
+      />
+    </div>
+  )
+}
+
+// Connector lines between rounds
+function BracketConnector({ matchCount, direction }: { matchCount: number, direction: 'right' | 'left' }) {
+  const height = matchCount * 58
+  const paths = []
+  
+  for (let i = 0; i < matchCount / 2; i++) {
+    const y1 = (i * 2) * 58 + 29
+    const y2 = (i * 2 + 1) * 58 + 29
+    const midY = (y1 + y2) / 2
+    
+    if (direction === 'right') {
+      paths.push(
+        <path
+          key={i}
+          d={`M 0 ${y1} H 15 V ${midY} H 30 M 0 ${y2} H 15 V ${midY}`}
+          fill="none"
+          stroke={VOODOO_COLORS.lime}
+          strokeWidth="1"
+          opacity="0.5"
+        />
+      )
+    } else {
+      paths.push(
+        <path
+          key={i}
+          d={`M 30 ${y1} H 15 V ${midY} H 0 M 30 ${y2} H 15 V ${midY}`}
+          fill="none"
+          stroke={VOODOO_COLORS.lime}
+          strokeWidth="1"
+          opacity="0.5"
+        />
+      )
+    }
+  }
+  
+  return (
+    <svg width="30" height={height} style={{ flexShrink: 0 }}>
+      {paths}
+    </svg>
+  )
+}
+
+// Region bracket (one side)
+function RegionBracket({ 
+  regionName,
+  matchups,
+  onSelectWinner,
+  direction,
+}: { 
+  regionName: string
+  matchups: Matchup[]
+  onSelectWinner: (id: string, team: Team) => void
+  direction: 'left' | 'right'
+}) {
+  const r64 = matchups.filter(m => m.round === 0)
+  const r32 = matchups.filter(m => m.round === 1)
+  const s16 = matchups.filter(m => m.round === 2)
+  const e8 = matchups.filter(m => m.round === 3)
+
+  const renderRound = (games: Matchup[], spacing: number) => (
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-around',
+      gap: `${spacing}px`,
+      height: '100%',
+    }}>
+      {games.map(m => (
+        <BracketMatchup
+          key={m.id}
+          matchup={m}
+          onSelectWinner={(team) => onSelectWinner(m.id, team)}
+        />
+      ))}
+    </div>
+  )
+
+  const content = direction === 'left' ? (
+    <>
+      {renderRound(r64, 4)}
+      <BracketConnector matchCount={8} direction="right" />
+      {renderRound(r32, 62)}
+      <BracketConnector matchCount={4} direction="right" />
+      {renderRound(s16, 178)}
+      <BracketConnector matchCount={2} direction="right" />
+      {renderRound(e8, 410)}
+    </>
+  ) : (
+    <>
+      {renderRound(e8, 410)}
+      <BracketConnector matchCount={2} direction="left" />
+      {renderRound(s16, 178)}
+      <BracketConnector matchCount={4} direction="left" />
+      {renderRound(r32, 62)}
+      <BracketConnector matchCount={8} direction="left" />
+      {renderRound(r64, 4)}
+    </>
+  )
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <div style={{
+        textAlign: 'center',
+        padding: '4px 12px',
+        background: VOODOO_COLORS.purple + '40',
+        borderRadius: '4px',
+        marginBottom: '8px',
+      }}>
+        <span style={{
+          fontSize: '10px',
+          fontWeight: 'bold',
+          color: VOODOO_COLORS.lime,
+          textTransform: 'uppercase',
+          letterSpacing: '1px',
+        }}>
+          {regionName}
+        </span>
+      </div>
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '4px',
+        height: '464px',
+      }}>
+        {content}
+      </div>
+    </div>
+  )
+}
+
+// Final Four bracket (center)
+function FinalFourBracket({ 
+  matchups,
+  onSelectWinner,
+}: { 
+  matchups: Matchup[]
+  onSelectWinner: (id: string, team: Team) => void
+}) {
+  const f4_1 = matchups.find(m => m.id === 'f4-1')!
+  const f4_2 = matchups.find(m => m.id === 'f4-2')!
+  const championship = matchups.find(m => m.id === 'championship')!
+
+  return (
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      gap: '8px',
+      padding: '0 16px',
+    }}>
+      <div style={{
+        textAlign: 'center',
+        padding: '6px 16px',
+        background: `linear-gradient(135deg, ${VOODOO_COLORS.lime}30, ${VOODOO_COLORS.purple}30)`,
+        borderRadius: '6px',
+        marginBottom: '4px',
+      }}>
+        <span style={{
+          fontSize: '11px',
+          fontWeight: 'bold',
+          color: VOODOO_COLORS.lime,
+          textTransform: 'uppercase',
+          letterSpacing: '1px',
+        }}>
+          Final Four
+        </span>
+      </div>
+      
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '16px',
+      }}>
+        {/* F4 Game 1 */}
+        <BracketMatchup
+          matchup={f4_1}
+          onSelectWinner={(team) => onSelectWinner('f4-1', team)}
+        />
+        
+        {/* Championship */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '4px',
+        }}>
+          <span style={{
+            fontSize: '9px',
+            color: VOODOO_COLORS.orange,
+            textTransform: 'uppercase',
+            letterSpacing: '1px',
+          }}>
+            🏆 Championship
+          </span>
+          <BracketMatchup
+            matchup={championship}
+            onSelectWinner={(team) => onSelectWinner('championship', team)}
+          />
+        </div>
+        
+        {/* F4 Game 2 */}
+        <BracketMatchup
+          matchup={f4_2}
+          onSelectWinner={(team) => onSelectWinner('f4-2', team)}
+        />
+      </div>
+    </div>
+  )
+}
+
+// Mobile components
+function MobileTeamSlot({ 
+  team, 
+  isWinner, 
+  onClick,
+  isClickable,
+}: { 
+  team: Team | null
+  isWinner: boolean
+  onClick?: () => void
+  isClickable: boolean
+}) {
+  return (
+    <div
+      onClick={isClickable ? onClick : undefined}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '10px',
+        padding: '10px 12px',
         background: isWinner 
           ? `linear-gradient(135deg, ${VOODOO_COLORS.lime}20, ${VOODOO_COLORS.lime}10)`
           : VOODOO_COLORS.darkGray,
@@ -237,18 +542,15 @@ function TeamSlot({
         transition: 'all 0.2s ease',
         boxShadow: isWinner ? `0 0 15px ${VOODOO_COLORS.limeGlow}` : 'none',
         touchAction: 'manipulation',
-        minHeight: compact ? '36px' : '42px',
       }}
       onMouseEnter={(e) => {
         if (isClickable && !isWinner) {
           e.currentTarget.style.borderColor = VOODOO_COLORS.orange
-          e.currentTarget.style.transform = 'scale(1.02)'
         }
       }}
       onMouseLeave={(e) => {
         if (!isWinner) {
           e.currentTarget.style.borderColor = VOODOO_COLORS.charcoal
-          e.currentTarget.style.transform = 'scale(1)'
         }
       }}
     >
@@ -258,11 +560,11 @@ function TeamSlot({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            width: compact ? '22px' : '24px',
-            height: compact ? '22px' : '24px',
+            width: '24px',
+            height: '24px',
             background: VOODOO_COLORS.purple,
             borderRadius: '50%',
-            fontSize: compact ? '10px' : '11px',
+            fontSize: '11px',
             fontWeight: 'bold',
             color: VOODOO_COLORS.white,
             flexShrink: 0,
@@ -272,70 +574,56 @@ function TeamSlot({
           <span style={{
             color: isWinner ? VOODOO_COLORS.lime : VOODOO_COLORS.white,
             fontWeight: isWinner ? 'bold' : 'normal',
-            fontSize: compact ? '11px' : '12px',
+            fontSize: '13px',
             textTransform: 'uppercase',
-            letterSpacing: '0.3px',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
           }}>
             {team.name}
           </span>
-          {isWinner && (
-            <span style={{ marginLeft: 'auto', fontSize: compact ? '12px' : '14px' }}>💀</span>
-          )}
+          {isWinner && <span style={{ marginLeft: 'auto' }}>💀</span>}
         </>
       ) : (
-        <span style={{ color: VOODOO_COLORS.gray, fontStyle: 'italic', fontSize: compact ? '10px' : '11px' }}>
-          TBD
-        </span>
+        <span style={{ color: VOODOO_COLORS.gray, fontSize: '12px' }}>TBD</span>
       )}
     </div>
   )
 }
 
-function MatchupCard({ 
+function MobileMatchupCard({ 
   matchup, 
   onSelectWinner,
-  compact = false,
 }: { 
   matchup: Matchup
   onSelectWinner: (team: Team) => void
-  compact?: boolean
 }) {
   return (
     <div style={{
       display: 'flex',
       flexDirection: 'column',
-      gap: '3px',
+      gap: '4px',
       width: '100%',
-      maxWidth: compact ? '200px' : '240px',
+      maxWidth: '280px',
     }}>
-      <TeamSlot 
+      <MobileTeamSlot 
         team={matchup.team1} 
         isWinner={matchup.winner?.name === matchup.team1?.name}
         onClick={() => matchup.team1 && onSelectWinner(matchup.team1)}
         isClickable={!!matchup.team1 && !!matchup.team2}
-        compact={compact}
       />
       <div style={{
         height: '2px',
         background: `linear-gradient(90deg, ${VOODOO_COLORS.lime}, ${VOODOO_COLORS.purple})`,
-        margin: '1px 0',
         borderRadius: '1px',
       }} />
-      <TeamSlot 
+      <MobileTeamSlot 
         team={matchup.team2} 
         isWinner={matchup.winner?.name === matchup.team2?.name}
         onClick={() => matchup.team2 && onSelectWinner(matchup.team2)}
         isClickable={!!matchup.team1 && !!matchup.team2}
-        compact={compact}
       />
     </div>
   )
 }
 
-// Round indicator pills
 function RoundIndicator({ 
   rounds, 
   currentRound, 
@@ -358,7 +646,7 @@ function RoundIndicator({
           key={round}
           onClick={() => onSelectRound(index)}
           style={{
-            padding: '6px 12px',
+            padding: '6px 10px',
             background: currentRound === index 
               ? VOODOO_COLORS.lime 
               : VOODOO_COLORS.charcoal,
@@ -366,13 +654,11 @@ function RoundIndicator({
               ? VOODOO_COLORS.black 
               : VOODOO_COLORS.white,
             border: 'none',
-            borderRadius: '16px',
-            fontSize: '10px',
+            borderRadius: '14px',
+            fontSize: '9px',
             fontWeight: 'bold',
             textTransform: 'uppercase',
-            letterSpacing: '0.3px',
             cursor: 'pointer',
-            transition: 'all 0.2s ease',
             whiteSpace: 'nowrap',
           }}
         >
@@ -383,7 +669,6 @@ function RoundIndicator({
   )
 }
 
-// Mobile swipe container
 function SwipeContainer({ 
   children, 
   currentIndex, 
@@ -452,14 +737,7 @@ function SwipeContainer({
         transform: `translateX(calc(-${currentIndex * 100}% + ${dragOffset}px))`,
       }}>
         {children.map((child, index) => (
-          <div
-            key={index}
-            style={{
-              minWidth: '100%',
-              padding: '0 12px',
-              boxSizing: 'border-box',
-            }}
-          >
+          <div key={index} style={{ minWidth: '100%', padding: '0 12px', boxSizing: 'border-box' }}>
             {child}
           </div>
         ))}
@@ -468,22 +746,20 @@ function SwipeContainer({
   )
 }
 
-// Region label component
 function RegionLabel({ name }: { name: string }) {
   return (
     <div style={{
       textAlign: 'center',
-      padding: '8px 16px',
+      padding: '6px 12px',
       background: VOODOO_COLORS.purple + '40',
-      borderRadius: '8px',
-      marginBottom: '12px',
+      borderRadius: '6px',
+      marginBottom: '10px',
     }}>
       <span style={{
-        fontSize: '12px',
+        fontSize: '11px',
         fontWeight: 'bold',
         color: VOODOO_COLORS.lime,
         textTransform: 'uppercase',
-        letterSpacing: '1px',
       }}>
         {name} Region
       </span>
@@ -497,9 +773,7 @@ export default function VoodooBracket() {
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 900)
-    }
+    const checkMobile = () => setIsMobile(window.innerWidth < 1200)
     checkMobile()
     window.addEventListener('resize', checkMobile)
     return () => window.removeEventListener('resize', checkMobile)
@@ -511,88 +785,64 @@ export default function VoodooBracket() {
       const matchupIndex = updated.findIndex(m => m.id === matchupId)
       if (matchupIndex === -1) return prev
 
-      const matchup = updated[matchupIndex]
-      updated[matchupIndex] = { ...matchup, winner }
+      updated[matchupIndex] = { ...updated[matchupIndex], winner }
 
-      // Round of 64 → Round of 32
+      // Advance logic
       if (matchupId.startsWith('r64-')) {
         const parts = matchupId.split('-')
         const region = parts[1]
         const gameNum = parseInt(parts[2])
         const r32Index = updated.findIndex(m => m.id === `r32-${region}-${Math.floor(gameNum / 2)}`)
         if (r32Index !== -1) {
-          if (gameNum % 2 === 0) {
-            updated[r32Index] = { ...updated[r32Index], team1: winner }
-          } else {
-            updated[r32Index] = { ...updated[r32Index], team2: winner }
-          }
+          if (gameNum % 2 === 0) updated[r32Index] = { ...updated[r32Index], team1: winner }
+          else updated[r32Index] = { ...updated[r32Index], team2: winner }
         }
       }
 
-      // Round of 32 → Sweet 16
       if (matchupId.startsWith('r32-')) {
         const parts = matchupId.split('-')
         const region = parts[1]
         const gameNum = parseInt(parts[2])
         const s16Index = updated.findIndex(m => m.id === `s16-${region}-${Math.floor(gameNum / 2)}`)
         if (s16Index !== -1) {
-          if (gameNum % 2 === 0) {
-            updated[s16Index] = { ...updated[s16Index], team1: winner }
-          } else {
-            updated[s16Index] = { ...updated[s16Index], team2: winner }
-          }
+          if (gameNum % 2 === 0) updated[s16Index] = { ...updated[s16Index], team1: winner }
+          else updated[s16Index] = { ...updated[s16Index], team2: winner }
         }
       }
 
-      // Sweet 16 → Elite 8
       if (matchupId.startsWith('s16-')) {
         const parts = matchupId.split('-')
         const region = parts[1]
         const gameNum = parseInt(parts[2])
         const e8Index = updated.findIndex(m => m.id === `e8-${region}`)
         if (e8Index !== -1) {
-          if (gameNum === 0) {
-            updated[e8Index] = { ...updated[e8Index], team1: winner }
-          } else {
-            updated[e8Index] = { ...updated[e8Index], team2: winner }
-          }
+          if (gameNum === 0) updated[e8Index] = { ...updated[e8Index], team1: winner }
+          else updated[e8Index] = { ...updated[e8Index], team2: winner }
         }
       }
 
-      // Elite 8 → Final Four
       if (matchupId.startsWith('e8-')) {
         const region = matchupId.replace('e8-', '')
         if (region === 'south' || region === 'east') {
           const f4Index = updated.findIndex(m => m.id === 'f4-1')
           if (f4Index !== -1) {
-            if (region === 'south') {
-              updated[f4Index] = { ...updated[f4Index], team1: winner }
-            } else {
-              updated[f4Index] = { ...updated[f4Index], team2: winner }
-            }
+            if (region === 'south') updated[f4Index] = { ...updated[f4Index], team1: winner }
+            else updated[f4Index] = { ...updated[f4Index], team2: winner }
           }
         } else {
           const f4Index = updated.findIndex(m => m.id === 'f4-2')
           if (f4Index !== -1) {
-            if (region === 'midwest') {
-              updated[f4Index] = { ...updated[f4Index], team1: winner }
-            } else {
-              updated[f4Index] = { ...updated[f4Index], team2: winner }
-            }
+            if (region === 'midwest') updated[f4Index] = { ...updated[f4Index], team1: winner }
+            else updated[f4Index] = { ...updated[f4Index], team2: winner }
           }
         }
       }
 
-      // Final Four → Championship
       if (matchupId.startsWith('f4-')) {
-        const gameNum = matchupId === 'f4-1' ? 0 : 1
         const champIndex = updated.findIndex(m => m.id === 'championship')
         if (champIndex !== -1) {
-          if (gameNum === 0) {
-            updated[champIndex] = { ...updated[champIndex], team1: winner }
-          } else {
-            updated[champIndex] = { ...updated[champIndex], team2: winner }
-          }
+          if (matchupId === 'f4-1') updated[champIndex] = { ...updated[champIndex], team1: winner }
+          else updated[champIndex] = { ...updated[champIndex], team2: winner }
         }
       }
 
@@ -601,51 +851,33 @@ export default function VoodooBracket() {
   }
 
   const handleSwipe = (direction: 'left' | 'right') => {
-    if (direction === 'left' && currentRound < 5) {
-      setCurrentRound(prev => prev + 1)
-    } else if (direction === 'right' && currentRound > 0) {
-      setCurrentRound(prev => prev - 1)
-    }
+    if (direction === 'left' && currentRound < 5) setCurrentRound(prev => prev + 1)
+    else if (direction === 'right' && currentRound > 0) setCurrentRound(prev => prev - 1)
   }
 
   const champion = matchups.find(m => m.id === 'championship')?.winner
-
-  // Get matchups by round
+  const getMatchupsByRegion = (region: string) => matchups.filter(m => m.region === region)
   const getMatchupsByRound = (round: number) => matchups.filter(m => m.round === round)
-  const getMatchupsByRegion = (round: number, region: string) => 
-    matchups.filter(m => m.round === round && m.region === region)
 
   // Mobile round views
   const mobileRoundViews = ROUNDS.slice(0, -1).map((roundName, roundIndex) => {
     const roundMatchups = getMatchupsByRound(roundIndex)
     
     if (roundIndex <= 3) {
-      // Rounds with regions (R64, R32, S16, E8)
       return (
-        <div key={roundName} style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '20px',
-          paddingBottom: '20px',
-        }}>
+        <div key={roundName} style={{ display: 'flex', flexDirection: 'column', gap: '16px', paddingBottom: '20px' }}>
           {['south', 'east', 'midwest', 'west'].map(region => {
-            const regionMatchups = getMatchupsByRegion(roundIndex, region)
+            const regionMatchups = roundMatchups.filter(m => m.region === region)
             if (regionMatchups.length === 0) return null
             return (
               <div key={region}>
                 <RegionLabel name={region.charAt(0).toUpperCase() + region.slice(1)} />
-                <div style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '12px',
-                  alignItems: 'center',
-                }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'center' }}>
                   {regionMatchups.map(matchup => (
-                    <MatchupCard 
+                    <MobileMatchupCard 
                       key={matchup.id}
                       matchup={matchup}
                       onSelectWinner={(team) => handleSelectWinner(matchup.id, team)}
-                      compact
                     />
                   ))}
                 </div>
@@ -655,34 +887,20 @@ export default function VoodooBracket() {
         </div>
       )
     } else {
-      // Final Four and Championship
       return (
-        <div key={roundName} style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '24px',
-          alignItems: 'center',
-          paddingBottom: '20px',
-        }}>
+        <div key={roundName} style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center', paddingBottom: '20px' }}>
           <div style={{
             textAlign: 'center',
-            padding: '12px 24px',
+            padding: '10px 20px',
             background: `linear-gradient(135deg, ${VOODOO_COLORS.lime}30, ${VOODOO_COLORS.purple}30)`,
-            borderRadius: '12px',
-            marginBottom: '8px',
+            borderRadius: '10px',
           }}>
-            <span style={{
-              fontSize: '14px',
-              fontWeight: 'bold',
-              color: VOODOO_COLORS.lime,
-              textTransform: 'uppercase',
-              letterSpacing: '2px',
-            }}>
+            <span style={{ fontSize: '13px', fontWeight: 'bold', color: VOODOO_COLORS.lime, textTransform: 'uppercase' }}>
               {roundName}
             </span>
           </div>
           {roundMatchups.map(matchup => (
-            <MatchupCard 
+            <MobileMatchupCard 
               key={matchup.id}
               matchup={matchup}
               onSelectWinner={(team) => handleSelectWinner(matchup.id, team)}
@@ -699,24 +917,15 @@ export default function VoodooBracket() {
       background: `linear-gradient(180deg, ${VOODOO_COLORS.black} 0%, #0A0A0A 100%)`,
       fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
       color: VOODOO_COLORS.white,
-      padding: '16px 0',
+      padding: '12px 0',
       overflowX: 'hidden',
     }}>
       {/* Header */}
-      <div style={{
-        textAlign: 'center',
-        marginBottom: '16px',
-        padding: '0 16px',
-      }}>
-        <div style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '10px',
-          marginBottom: '6px',
-        }}>
-          <span style={{ fontSize: '28px' }}>💀</span>
+      <div style={{ textAlign: 'center', marginBottom: '12px', padding: '0 16px' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+          <span style={{ fontSize: '24px' }}>💀</span>
           <h1 style={{
-            fontSize: 'clamp(20px, 5vw, 40px)',
+            fontSize: 'clamp(18px, 4vw, 32px)',
             fontWeight: 900,
             textTransform: 'uppercase',
             letterSpacing: '2px',
@@ -728,16 +937,10 @@ export default function VoodooBracket() {
           }}>
             Voodoo Bracket
           </h1>
-          <span style={{ fontSize: '28px' }}>💀</span>
+          <span style={{ fontSize: '24px' }}>💀</span>
         </div>
-        <p style={{
-          color: VOODOO_COLORS.gray,
-          fontSize: '11px',
-          textTransform: 'uppercase',
-          letterSpacing: '1.5px',
-          margin: 0,
-        }}>
-          March Madness 2026 • 64 Teams • Live Rangerously
+        <p style={{ color: VOODOO_COLORS.gray, fontSize: '10px', textTransform: 'uppercase', letterSpacing: '1px', margin: 0 }}>
+          March Madness 2026 • 64 Teams
         </p>
       </div>
 
@@ -745,169 +948,92 @@ export default function VoodooBracket() {
       {champion && (
         <div style={{
           textAlign: 'center',
-          padding: '16px',
-          margin: '0 16px 16px',
+          padding: '14px',
+          margin: '0 16px 12px',
           background: `linear-gradient(135deg, ${VOODOO_COLORS.lime}20, ${VOODOO_COLORS.purple}20)`,
-          borderRadius: '12px',
+          borderRadius: '10px',
           border: `2px solid ${VOODOO_COLORS.lime}`,
-          boxShadow: `0 0 30px ${VOODOO_COLORS.limeGlow}`,
+          boxShadow: `0 0 25px ${VOODOO_COLORS.limeGlow}`,
         }}>
-          <div style={{ fontSize: '36px', marginBottom: '6px' }}>🏆</div>
-          <div style={{
-            fontSize: '10px',
-            color: VOODOO_COLORS.orange,
-            textTransform: 'uppercase',
-            letterSpacing: '2px',
-            marginBottom: '4px',
-          }}>
+          <div style={{ fontSize: '32px', marginBottom: '4px' }}>🏆</div>
+          <div style={{ fontSize: '9px', color: VOODOO_COLORS.orange, textTransform: 'uppercase', letterSpacing: '2px' }}>
             National Champion
           </div>
-          <div style={{
-            fontSize: '18px',
-            fontWeight: 'bold',
-            color: VOODOO_COLORS.lime,
-            textTransform: 'uppercase',
-          }}>
+          <div style={{ fontSize: '16px', fontWeight: 'bold', color: VOODOO_COLORS.lime, textTransform: 'uppercase' }}>
             {champion.name}
           </div>
         </div>
       )}
 
-      {/* Progress indicator */}
-      <div style={{
-        textAlign: 'center',
-        marginBottom: '8px',
-        color: VOODOO_COLORS.gray,
-        fontSize: '11px',
-      }}>
+      {/* Progress */}
+      <div style={{ textAlign: 'center', marginBottom: '8px', color: VOODOO_COLORS.gray, fontSize: '10px' }}>
         {matchups.filter(m => m.winner).length} / {matchups.length} picks made
       </div>
 
-      {/* Mobile Layout */}
       {isMobile ? (
         <>
-          <RoundIndicator 
-            rounds={ROUNDS}
-            currentRound={currentRound}
-            onSelectRound={setCurrentRound}
-          />
-          
-          {/* Swipe hint */}
-          <div style={{
-            textAlign: 'center',
-            color: VOODOO_COLORS.gray,
-            fontSize: '10px',
-            marginBottom: '12px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '6px',
-          }}>
-            <span>👈</span>
-            <span>Swipe or tap rounds</span>
-            <span>👉</span>
+          <RoundIndicator rounds={ROUNDS} currentRound={currentRound} onSelectRound={setCurrentRound} />
+          <div style={{ textAlign: 'center', color: VOODOO_COLORS.gray, fontSize: '9px', marginBottom: '10px' }}>
+            👈 Swipe or tap rounds 👉
           </div>
-
-          <SwipeContainer
-            currentIndex={currentRound}
-            totalSlides={6}
-            onSwipe={handleSwipe}
-          >
+          <SwipeContainer currentIndex={currentRound} totalSlides={6} onSwipe={handleSwipe}>
             {mobileRoundViews}
           </SwipeContainer>
         </>
       ) : (
-        /* Desktop Layout - Horizontal scroll */
-        <div style={{
-          overflowX: 'auto',
-          padding: '20px',
-        }}>
-          <div style={{
-            display: 'flex',
-            gap: '16px',
-            minWidth: 'max-content',
-            alignItems: 'flex-start',
-          }}>
-            {ROUNDS.slice(0, -1).map((roundName, roundIndex) => {
-              const roundMatchups = getMatchupsByRound(roundIndex)
-              return (
-                <div key={roundName} style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '8px',
-                  minWidth: '220px',
-                }}>
-                  <div style={{
-                    textAlign: 'center',
-                    padding: '8px',
-                    background: VOODOO_COLORS.charcoal,
-                    borderRadius: '8px',
-                    marginBottom: '8px',
-                  }}>
-                    <span style={{
-                      fontSize: '11px',
-                      fontWeight: 'bold',
-                      color: VOODOO_COLORS.orange,
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.5px',
-                    }}>
-                      {roundName}
-                    </span>
-                  </div>
-                  {roundMatchups.map(matchup => (
-                    <MatchupCard 
-                      key={matchup.id}
-                      matchup={matchup}
-                      onSelectWinner={(team) => handleSelectWinner(matchup.id, team)}
-                      compact
-                    />
-                  ))}
-                </div>
-              )
-            })}
+        /* Desktop Bracket View */
+        <div style={{ overflowX: 'auto', padding: '10px 20px' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', minWidth: 'max-content' }}>
+            {/* Left Side - South & East */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              <RegionBracket
+                regionName="South"
+                matchups={getMatchupsByRegion('south')}
+                onSelectWinner={handleSelectWinner}
+                direction="left"
+              />
+              <RegionBracket
+                regionName="East"
+                matchups={getMatchupsByRegion('east')}
+                onSelectWinner={handleSelectWinner}
+                direction="left"
+              />
+            </div>
+
+            {/* Center - Final Four */}
+            <div style={{ display: 'flex', alignItems: 'center', minHeight: '960px' }}>
+              <FinalFourBracket matchups={matchups} onSelectWinner={handleSelectWinner} />
+            </div>
+
+            {/* Right Side - Midwest & West */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              <RegionBracket
+                regionName="Midwest"
+                matchups={getMatchupsByRegion('midwest')}
+                onSelectWinner={handleSelectWinner}
+                direction="right"
+              />
+              <RegionBracket
+                regionName="West"
+                matchups={getMatchupsByRegion('west')}
+                onSelectWinner={handleSelectWinner}
+                direction="right"
+              />
+            </div>
           </div>
         </div>
       )}
 
-      {/* Instructions */}
-      <div style={{
-        textAlign: 'center',
-        marginTop: '32px',
-        padding: '16px',
-        color: VOODOO_COLORS.gray,
-        fontSize: '12px',
-      }}>
-        <p style={{ margin: '0 0 6px' }}>
-          Tap a team to pick them as the winner
-        </p>
-        <p style={{ 
-          margin: 0, 
-          color: VOODOO_COLORS.orange,
-          fontSize: '10px',
-          textTransform: 'uppercase',
-          letterSpacing: '1px',
-        }}>
+      {/* Footer */}
+      <div style={{ textAlign: 'center', marginTop: '24px', padding: '16px', color: VOODOO_COLORS.gray, fontSize: '11px' }}>
+        <p style={{ margin: '0 0 4px' }}>Tap a team to pick them as the winner</p>
+        <p style={{ margin: 0, color: VOODOO_COLORS.orange, fontSize: '9px', textTransform: 'uppercase', letterSpacing: '1px' }}>
           Proof of Concept • Consume & Create
         </p>
       </div>
 
-      {/* Floating skulls */}
-      <div style={{
-        position: 'fixed',
-        top: '16px',
-        left: '16px',
-        fontSize: '18px',
-        opacity: 0.12,
-        pointerEvents: 'none',
-      }}>💀</div>
-      <div style={{
-        position: 'fixed',
-        bottom: '16px',
-        right: '16px',
-        fontSize: '18px',
-        opacity: 0.12,
-        pointerEvents: 'none',
-      }}>💀</div>
+      <div style={{ position: 'fixed', top: '12px', left: '12px', fontSize: '16px', opacity: 0.1, pointerEvents: 'none' }}>💀</div>
+      <div style={{ position: 'fixed', bottom: '12px', right: '12px', fontSize: '16px', opacity: 0.1, pointerEvents: 'none' }}>💀</div>
     </div>
   )
 }
