@@ -216,9 +216,17 @@ function BracketTeamSlot({
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
+            flex: 1,
           }}>
             {team.name}
           </span>
+          {isWinner && (
+            <img 
+              src="/thumbs-up.svg" 
+              alt="Winner" 
+              style={{ width: '24px', height: '24px', flexShrink: 0 }} 
+            />
+          )}
         </>
       ) : (
         <span style={{ color: VOODOO_COLORS.gray, fontSize: '14px' }}>TBD</span>
