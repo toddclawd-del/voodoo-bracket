@@ -107,9 +107,11 @@ const REGIONS = {
   ],
 }
 
-// Matchup height constants
-const MATCHUP_HEIGHT = 70 // Height of one matchup (2 teams + gap)
-const MATCHUP_GAP = 12 // Gap between matchups in R64
+// Matchup height constants - MUST match actual rendered size
+const TEAM_SLOT_HEIGHT = 42 // Height of one team slot
+const TEAM_SLOT_GAP = 6 // Gap between the two team slots
+const MATCHUP_HEIGHT = TEAM_SLOT_HEIGHT * 2 + TEAM_SLOT_GAP // 90px total
+const MATCHUP_GAP = 16 // Gap between matchups in R64
 
 function buildInitialMatchups(): Matchup[] {
   const matchups: Matchup[] = []
@@ -170,18 +172,19 @@ function BracketTeamSlot({
       style={{
         display: 'flex',
         alignItems: 'center',
-        gap: '8px',
-        padding: '6px 10px',
+        gap: '10px',
+        padding: '8px 14px',
         background: isWinner 
           ? `linear-gradient(135deg, ${VOODOO_COLORS.gold}25, ${VOODOO_COLORS.gold}10)`
           : VOODOO_COLORS.darkGray,
         border: `2px solid ${isWinner ? VOODOO_COLORS.gold : VOODOO_COLORS.charcoal}`,
-        borderRadius: '4px',
+        borderRadius: '5px',
         cursor: isClickable ? 'pointer' : 'default',
         transition: 'all 0.15s ease',
-        boxShadow: isWinner ? `0 0 8px ${VOODOO_COLORS.goldGlow}` : 'none',
-        height: '28px',
-        minWidth: '130px',
+        boxShadow: isWinner ? `0 0 10px ${VOODOO_COLORS.goldGlow}` : 'none',
+        height: `${TEAM_SLOT_HEIGHT}px`,
+        minWidth: '170px',
+        boxSizing: 'border-box',
       }}
       onMouseEnter={(e) => {
         if (isClickable && !isWinner) {
@@ -199,17 +202,17 @@ function BracketTeamSlot({
       {team ? (
         <>
           <span style={{
-            fontSize: '12px',
+            fontSize: '15px',
             fontWeight: 'bold',
             color: VOODOO_COLORS.gold,
-            minWidth: '16px',
+            minWidth: '20px',
           }}>
             {team.seed}
           </span>
           <span style={{
             color: isWinner ? VOODOO_COLORS.gold : VOODOO_COLORS.cream,
             fontWeight: isWinner ? 'bold' : 'normal',
-            fontSize: '13px',
+            fontSize: '16px',
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
@@ -218,7 +221,7 @@ function BracketTeamSlot({
           </span>
         </>
       ) : (
-        <span style={{ color: VOODOO_COLORS.gray, fontSize: '12px' }}>TBD</span>
+        <span style={{ color: VOODOO_COLORS.gray, fontSize: '14px' }}>TBD</span>
       )}
     </div>
   )
@@ -227,7 +230,7 @@ function BracketTeamSlot({
 // Bracket matchup (two teams stacked)
 function BracketMatchup({ matchup, onSelectWinner }: { matchup: Matchup, onSelectWinner: (team: Team) => void }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: `${TEAM_SLOT_GAP}px`, height: `${MATCHUP_HEIGHT}px` }}>
       <BracketTeamSlot 
         team={matchup.team1} 
         isWinner={matchup.winner?.name === matchup.team1?.name}
@@ -249,42 +252,50 @@ function RoundConnector({
   inputCount, 
   inputSpacing, 
   outputSpacing,
+  inputOffset,
+  outputOffset,
   direction 
 }: { 
   inputCount: number
   inputSpacing: number
   outputSpacing: number
+  inputOffset: number
+  outputOffset: number
   direction: 'right' | 'left' 
 }) {
   const inputCenters: number[] = []
   const outputCenters: number[] = []
   
-  // Calculate center Y positions for input matchups
+  // Calculate center Y positions for input matchups (including their offset)
   for (let i = 0; i < inputCount; i++) {
-    inputCenters.push(i * inputSpacing + MATCHUP_HEIGHT / 2)
+    inputCenters.push(inputOffset + i * inputSpacing + MATCHUP_HEIGHT / 2)
   }
   
-  // Calculate center Y positions for output matchups
+  // Calculate center Y positions for output matchups (including their offset)
   for (let i = 0; i < inputCount / 2; i++) {
-    outputCenters.push(i * outputSpacing + MATCHUP_HEIGHT / 2)
+    outputCenters.push(outputOffset + i * outputSpacing + MATCHUP_HEIGHT / 2)
   }
   
-  const totalHeight = Math.max(
-    (inputCount - 1) * inputSpacing + MATCHUP_HEIGHT,
-    (inputCount / 2 - 1) * outputSpacing + MATCHUP_HEIGHT
-  )
+  // Total height needs to cover both input and output ranges
+  const inputMax = inputOffset + (inputCount - 1) * inputSpacing + MATCHUP_HEIGHT
+  const outputMax = outputOffset + (inputCount / 2 - 1) * outputSpacing + MATCHUP_HEIGHT
+  const totalHeight = Math.max(inputMax, outputMax)
   
   const paths = []
+  const connectorWidth = 50
+  const midX = connectorWidth / 2
+  
   for (let i = 0; i < inputCount / 2; i++) {
     const y1 = inputCenters[i * 2]
     const y2 = inputCenters[i * 2 + 1]
     const yOut = outputCenters[i]
     
     if (direction === 'right') {
+      // Lines go: horizontal from left edge, then vertical to meet, then horizontal to right edge
       paths.push(
         <path
           key={i}
-          d={`M 0 ${y1} H 20 V ${yOut} H 40 M 0 ${y2} H 20 V ${yOut}`}
+          d={`M 0 ${y1} H ${midX} V ${yOut} H ${connectorWidth} M 0 ${y2} H ${midX} V ${yOut}`}
           fill="none"
           stroke={VOODOO_COLORS.gold}
           strokeWidth="2"
@@ -295,7 +306,7 @@ function RoundConnector({
       paths.push(
         <path
           key={i}
-          d={`M 40 ${y1} H 20 V ${yOut} H 0 M 40 ${y2} H 20 V ${yOut}`}
+          d={`M ${connectorWidth} ${y1} H ${midX} V ${yOut} H 0 M ${connectorWidth} ${y2} H ${midX} V ${yOut}`}
           fill="none"
           stroke={VOODOO_COLORS.gold}
           strokeWidth="2"
@@ -306,7 +317,7 @@ function RoundConnector({
   }
   
   return (
-    <svg width="40" height={totalHeight} style={{ flexShrink: 0 }}>
+    <svg width={connectorWidth} height={totalHeight} style={{ flexShrink: 0 }}>
       {paths}
     </svg>
   )
@@ -353,16 +364,17 @@ function RegionBracket({
   const e8 = matchups.filter(m => m.round === 3)
 
   // Spacing between matchups (center to center)
-  const R64_SPACING = MATCHUP_HEIGHT + MATCHUP_GAP  // 82px
-  const R32_SPACING = R64_SPACING * 2               // 164px
-  const S16_SPACING = R32_SPACING * 2               // 328px
-  const E8_SPACING = S16_SPACING * 2                // 656px
+  const R64_SPACING = MATCHUP_HEIGHT + MATCHUP_GAP
+  const R32_SPACING = R64_SPACING * 2
+  const S16_SPACING = R32_SPACING * 2
+  const E8_SPACING = S16_SPACING * 2
 
   // Calculate offsets to vertically center each round
+  // Each round should be centered between pairs of the previous round
   const R64_OFFSET = 0
-  const R32_OFFSET = (R64_SPACING - MATCHUP_HEIGHT) / 2 + MATCHUP_HEIGHT / 2
-  const S16_OFFSET = (R32_SPACING - MATCHUP_HEIGHT) / 2 + MATCHUP_HEIGHT / 2
-  const E8_OFFSET = (S16_SPACING - MATCHUP_HEIGHT) / 2 + MATCHUP_HEIGHT / 2
+  const R32_OFFSET = R64_OFFSET + R64_SPACING / 2
+  const S16_OFFSET = R32_OFFSET + R32_SPACING / 2
+  const E8_OFFSET = S16_OFFSET + S16_SPACING / 2
 
   const bracketHeight = 8 * R64_SPACING - MATCHUP_GAP
 
@@ -371,15 +383,15 @@ function RegionBracket({
       <div style={{ paddingTop: R64_OFFSET }}>
         <RoundColumn matchups={r64} spacing={R64_SPACING} onSelectWinner={onSelectWinner} />
       </div>
-      <RoundConnector inputCount={8} inputSpacing={R64_SPACING} outputSpacing={R32_SPACING} direction="right" />
+      <RoundConnector inputCount={8} inputSpacing={R64_SPACING} outputSpacing={R32_SPACING} inputOffset={R64_OFFSET} outputOffset={R32_OFFSET} direction="right" />
       <div style={{ paddingTop: R32_OFFSET }}>
         <RoundColumn matchups={r32} spacing={R32_SPACING} onSelectWinner={onSelectWinner} />
       </div>
-      <RoundConnector inputCount={4} inputSpacing={R32_SPACING} outputSpacing={S16_SPACING} direction="right" />
+      <RoundConnector inputCount={4} inputSpacing={R32_SPACING} outputSpacing={S16_SPACING} inputOffset={R32_OFFSET} outputOffset={S16_OFFSET} direction="right" />
       <div style={{ paddingTop: S16_OFFSET }}>
         <RoundColumn matchups={s16} spacing={S16_SPACING} onSelectWinner={onSelectWinner} />
       </div>
-      <RoundConnector inputCount={2} inputSpacing={S16_SPACING} outputSpacing={E8_SPACING} direction="right" />
+      <RoundConnector inputCount={2} inputSpacing={S16_SPACING} outputSpacing={E8_SPACING} inputOffset={S16_OFFSET} outputOffset={E8_OFFSET} direction="right" />
       <div style={{ paddingTop: E8_OFFSET }}>
         <RoundColumn matchups={e8} spacing={E8_SPACING} onSelectWinner={onSelectWinner} />
       </div>
@@ -389,15 +401,15 @@ function RegionBracket({
       <div style={{ paddingTop: E8_OFFSET }}>
         <RoundColumn matchups={e8} spacing={E8_SPACING} onSelectWinner={onSelectWinner} />
       </div>
-      <RoundConnector inputCount={2} inputSpacing={S16_SPACING} outputSpacing={E8_SPACING} direction="left" />
+      <RoundConnector inputCount={2} inputSpacing={S16_SPACING} outputSpacing={E8_SPACING} inputOffset={S16_OFFSET} outputOffset={E8_OFFSET} direction="left" />
       <div style={{ paddingTop: S16_OFFSET }}>
         <RoundColumn matchups={s16} spacing={S16_SPACING} onSelectWinner={onSelectWinner} />
       </div>
-      <RoundConnector inputCount={4} inputSpacing={R32_SPACING} outputSpacing={S16_SPACING} direction="left" />
+      <RoundConnector inputCount={4} inputSpacing={R32_SPACING} outputSpacing={S16_SPACING} inputOffset={R32_OFFSET} outputOffset={S16_OFFSET} direction="left" />
       <div style={{ paddingTop: R32_OFFSET }}>
         <RoundColumn matchups={r32} spacing={R32_SPACING} onSelectWinner={onSelectWinner} />
       </div>
-      <RoundConnector inputCount={8} inputSpacing={R64_SPACING} outputSpacing={R32_SPACING} direction="left" />
+      <RoundConnector inputCount={8} inputSpacing={R64_SPACING} outputSpacing={R32_SPACING} inputOffset={R64_OFFSET} outputOffset={R32_OFFSET} direction="left" />
       <div style={{ paddingTop: R64_OFFSET }}>
         <RoundColumn matchups={r64} spacing={R64_SPACING} onSelectWinner={onSelectWinner} />
       </div>
