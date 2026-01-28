@@ -222,7 +222,7 @@ function BracketTeamSlot({
           </span>
           {isWinner && (
             <img 
-              src="/thumbs-up.svg" 
+              src={`${import.meta.env.BASE_URL}thumbs-up.svg`}
               alt="Winner" 
               style={{ width: '24px', height: '24px', flexShrink: 0 }} 
             />
@@ -741,7 +741,7 @@ export default function VoodooBracket() {
         gap: '24px',
       }}>
         <img 
-          src="/march-rangerousness.png" 
+          src={`${import.meta.env.BASE_URL}march-rangerousness.png`}
           alt="March Rangerousness 2026" 
           style={{ maxWidth: '280px', height: 'auto', opacity: 0.9 }} 
         />
@@ -776,7 +776,7 @@ export default function VoodooBracket() {
       {/* Header */}
       <div style={{ textAlign: 'center', marginBottom: '16px', padding: '0 16px' }}>
         <img 
-          src="/march-rangerousness.png" 
+          src={`${import.meta.env.BASE_URL}march-rangerousness.png`}
           alt="March Rangerousness 2026" 
           style={{ 
             maxWidth: 'min(320px, 80vw)', 
