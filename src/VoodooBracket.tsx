@@ -183,7 +183,7 @@ function BracketTeamSlot({
         transition: 'all 0.15s ease',
         boxShadow: isWinner ? `0 0 10px ${VOODOO_COLORS.goldGlow}` : 'none',
         height: `${TEAM_SLOT_HEIGHT}px`,
-        minWidth: '170px',
+        minWidth: '145px',
         boxSizing: 'border-box',
       }}
       onMouseEnter={(e) => {
@@ -282,7 +282,7 @@ function RoundConnector({
   const totalHeight = Math.max(inputMax, outputMax)
   
   const paths = []
-  const connectorWidth = 50
+  const connectorWidth = 36
   const midX = connectorWidth / 2
   
   for (let i = 0; i < inputCount / 2; i++) {
@@ -435,7 +435,7 @@ function RegionBracket({
           {regionName}
         </span>
       </div>
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', height: bracketHeight }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '4px', height: bracketHeight }}>
         {content}
       </div>
     </div>
@@ -603,11 +603,12 @@ export default function VoodooBracket() {
     const checkSize = () => {
       const width = window.innerWidth
       setIsMobile(width < 1000)
-      if (width >= 1800) setBracketScale(1)
-      else if (width >= 1600) setBracketScale(0.85)
-      else if (width >= 1400) setBracketScale(0.75)
-      else if (width >= 1200) setBracketScale(0.65)
-      else if (width >= 1000) setBracketScale(0.55)
+      // Scale bracket to fit viewport - bracket is ~1650px wide at scale 1
+      if (width >= 1700) setBracketScale(1)
+      else if (width >= 1500) setBracketScale(0.9)
+      else if (width >= 1300) setBracketScale(0.78)
+      else if (width >= 1100) setBracketScale(0.66)
+      else if (width >= 1000) setBracketScale(0.58)
     }
     checkSize()
     window.addEventListener('resize', checkSize)
@@ -765,7 +766,7 @@ export default function VoodooBracket() {
         </>
       ) : (
         <div style={{ overflow: 'hidden', padding: '20px', display: 'flex', justifyContent: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', transform: `scale(${bracketScale})`, transformOrigin: 'top center' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', transform: `scale(${bracketScale})`, transformOrigin: 'top center' }}>
             {/* Left Side */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
               <RegionBracket regionName="South" matchups={getMatchupsByRegion('south')} onSelectWinner={handleSelectWinner} direction="left" />
