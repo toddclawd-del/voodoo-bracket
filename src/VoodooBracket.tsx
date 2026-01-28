@@ -19,13 +19,13 @@ interface Matchup {
 }
 
 const VOODOO_COLORS = {
-  black: '#0D0D0D',
-  darkGray: '#1A1A1A',
-  charcoal: '#2D2D2D',
-  lime: '#00FF41',
-  limeGlow: '#00FF4180',
-  orange: '#FF6B00',
-  purple: '#9B00FF',
+  black: '#231F20',
+  darkGray: '#2D2A2B',
+  charcoal: '#3D3A3B',
+  gold: '#F1C218',
+  goldGlow: '#F1C21880',
+  cream: '#EBE9E2',
+  darkCream: '#D4D2CB',
   white: '#FFFFFF',
   gray: '#888888',
 }
@@ -220,20 +220,20 @@ function BracketTeamSlot({
         gap: '6px',
         padding: '4px 8px',
         background: isWinner 
-          ? `linear-gradient(135deg, ${VOODOO_COLORS.lime}25, ${VOODOO_COLORS.lime}10)`
+          ? `linear-gradient(135deg, ${VOODOO_COLORS.gold}25, ${VOODOO_COLORS.gold}10)`
           : VOODOO_COLORS.darkGray,
-        border: `1px solid ${isWinner ? VOODOO_COLORS.lime : VOODOO_COLORS.charcoal}`,
+        border: `1px solid ${isWinner ? VOODOO_COLORS.gold : VOODOO_COLORS.charcoal}`,
         borderRadius: '4px',
         cursor: isClickable ? 'pointer' : 'default',
         transition: 'all 0.15s ease',
-        boxShadow: isWinner ? `0 0 8px ${VOODOO_COLORS.limeGlow}` : 'none',
+        boxShadow: isWinner ? `0 0 8px ${VOODOO_COLORS.goldGlow}` : 'none',
         height: '28px',
         minWidth: '140px',
         maxWidth: '160px',
       }}
       onMouseEnter={(e) => {
         if (isClickable && !isWinner) {
-          e.currentTarget.style.borderColor = VOODOO_COLORS.orange
+          e.currentTarget.style.borderColor = VOODOO_COLORS.cream
           e.currentTarget.style.background = VOODOO_COLORS.charcoal
         }
       }}
@@ -249,13 +249,13 @@ function BracketTeamSlot({
           <span style={{
             fontSize: '15px',
             fontWeight: 'bold',
-            color: VOODOO_COLORS.purple,
+            color: VOODOO_COLORS.gold,
             minWidth: '14px',
           }}>
             {team.seed}
           </span>
           <span style={{
-            color: isWinner ? VOODOO_COLORS.lime : VOODOO_COLORS.white,
+            color: isWinner ? VOODOO_COLORS.gold : VOODOO_COLORS.cream,
             fontWeight: isWinner ? 'bold' : 'normal',
             fontSize: '16px',
             whiteSpace: 'nowrap',
@@ -318,7 +318,7 @@ function BracketConnector({ matchCount, direction }: { matchCount: number, direc
           key={i}
           d={`M 0 ${y1} H 15 V ${midY} H 30 M 0 ${y2} H 15 V ${midY}`}
           fill="none"
-          stroke={VOODOO_COLORS.lime}
+          stroke={VOODOO_COLORS.gold}
           strokeWidth="1"
           opacity="0.5"
         />
@@ -329,7 +329,7 @@ function BracketConnector({ matchCount, direction }: { matchCount: number, direc
           key={i}
           d={`M 30 ${y1} H 15 V ${midY} H 0 M 30 ${y2} H 15 V ${midY}`}
           fill="none"
-          stroke={VOODOO_COLORS.lime}
+          stroke={VOODOO_COLORS.gold}
           strokeWidth="1"
           opacity="0.5"
         />
@@ -406,14 +406,14 @@ function RegionBracket({
       <div style={{
         textAlign: 'center',
         padding: '4px 12px',
-        background: VOODOO_COLORS.purple + '40',
+        background: VOODOO_COLORS.gold + '40',
         borderRadius: '4px',
         marginBottom: '8px',
       }}>
         <span style={{
           fontSize: '16px',
           fontWeight: 'bold',
-          color: VOODOO_COLORS.lime,
+          color: VOODOO_COLORS.gold,
           textTransform: 'uppercase',
           letterSpacing: '1px',
         }}>
@@ -455,14 +455,14 @@ function FinalFourBracket({
       <div style={{
         textAlign: 'center',
         padding: '6px 16px',
-        background: `linear-gradient(135deg, ${VOODOO_COLORS.lime}30, ${VOODOO_COLORS.purple}30)`,
+        background: `linear-gradient(135deg, ${VOODOO_COLORS.gold}30, ${VOODOO_COLORS.gold}30)`,
         borderRadius: '6px',
         marginBottom: '4px',
       }}>
         <span style={{
           fontSize: '15px',
           fontWeight: 'bold',
-          color: VOODOO_COLORS.lime,
+          color: VOODOO_COLORS.gold,
           textTransform: 'uppercase',
           letterSpacing: '1px',
         }}>
@@ -491,7 +491,7 @@ function FinalFourBracket({
         }}>
           <span style={{
             fontSize: '15px',
-            color: VOODOO_COLORS.orange,
+            color: VOODOO_COLORS.cream,
             textTransform: 'uppercase',
             letterSpacing: '1px',
           }}>
@@ -534,18 +534,18 @@ function MobileTeamSlot({
         gap: '10px',
         padding: '10px 12px',
         background: isWinner 
-          ? `linear-gradient(135deg, ${VOODOO_COLORS.lime}20, ${VOODOO_COLORS.lime}10)`
+          ? `linear-gradient(135deg, ${VOODOO_COLORS.gold}20, ${VOODOO_COLORS.gold}10)`
           : VOODOO_COLORS.darkGray,
-        border: `2px solid ${isWinner ? VOODOO_COLORS.lime : VOODOO_COLORS.charcoal}`,
+        border: `2px solid ${isWinner ? VOODOO_COLORS.gold : VOODOO_COLORS.charcoal}`,
         borderRadius: '6px',
         cursor: isClickable ? 'pointer' : 'default',
         transition: 'all 0.2s ease',
-        boxShadow: isWinner ? `0 0 15px ${VOODOO_COLORS.limeGlow}` : 'none',
+        boxShadow: isWinner ? `0 0 15px ${VOODOO_COLORS.goldGlow}` : 'none',
         touchAction: 'manipulation',
       }}
       onMouseEnter={(e) => {
         if (isClickable && !isWinner) {
-          e.currentTarget.style.borderColor = VOODOO_COLORS.orange
+          e.currentTarget.style.borderColor = VOODOO_COLORS.cream
         }
       }}
       onMouseLeave={(e) => {
@@ -562,17 +562,17 @@ function MobileTeamSlot({
             justifyContent: 'center',
             width: '24px',
             height: '28px',
-            background: VOODOO_COLORS.purple,
+            background: VOODOO_COLORS.gold,
             borderRadius: '50%',
             fontSize: '15px',
             fontWeight: 'bold',
-            color: VOODOO_COLORS.white,
+            color: VOODOO_COLORS.cream,
             flexShrink: 0,
           }}>
             {team.seed}
           </span>
           <span style={{
-            color: isWinner ? VOODOO_COLORS.lime : VOODOO_COLORS.white,
+            color: isWinner ? VOODOO_COLORS.gold : VOODOO_COLORS.cream,
             fontWeight: isWinner ? 'bold' : 'normal',
             fontSize: '15px',
             textTransform: 'uppercase',
@@ -611,7 +611,7 @@ function MobileMatchupCard({
       />
       <div style={{
         height: '2px',
-        background: `linear-gradient(90deg, ${VOODOO_COLORS.lime}, ${VOODOO_COLORS.purple})`,
+        background: `linear-gradient(90deg, ${VOODOO_COLORS.gold}, ${VOODOO_COLORS.gold})`,
         borderRadius: '1px',
       }} />
       <MobileTeamSlot 
@@ -648,11 +648,11 @@ function RoundIndicator({
           style={{
             padding: '6px 10px',
             background: currentRound === index 
-              ? VOODOO_COLORS.lime 
+              ? VOODOO_COLORS.gold 
               : VOODOO_COLORS.charcoal,
             color: currentRound === index 
               ? VOODOO_COLORS.black 
-              : VOODOO_COLORS.white,
+              : VOODOO_COLORS.cream,
             border: 'none',
             borderRadius: '14px',
             fontSize: '15px',
@@ -751,14 +751,14 @@ function RegionLabel({ name }: { name: string }) {
     <div style={{
       textAlign: 'center',
       padding: '6px 12px',
-      background: VOODOO_COLORS.purple + '40',
+      background: VOODOO_COLORS.gold + '40',
       borderRadius: '6px',
       marginBottom: '10px',
     }}>
       <span style={{
         fontSize: '15px',
         fontWeight: 'bold',
-        color: VOODOO_COLORS.lime,
+        color: VOODOO_COLORS.gold,
         textTransform: 'uppercase',
       }}>
         {name} Region
@@ -892,10 +892,10 @@ export default function VoodooBracket() {
           <div style={{
             textAlign: 'center',
             padding: '10px 20px',
-            background: `linear-gradient(135deg, ${VOODOO_COLORS.lime}30, ${VOODOO_COLORS.purple}30)`,
+            background: `linear-gradient(135deg, ${VOODOO_COLORS.gold}30, ${VOODOO_COLORS.gold}30)`,
             borderRadius: '10px',
           }}>
-            <span style={{ fontSize: '15px', fontWeight: 'bold', color: VOODOO_COLORS.lime, textTransform: 'uppercase' }}>
+            <span style={{ fontSize: '15px', fontWeight: 'bold', color: VOODOO_COLORS.gold, textTransform: 'uppercase' }}>
               {roundName}
             </span>
           </div>
@@ -914,9 +914,9 @@ export default function VoodooBracket() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: `linear-gradient(180deg, ${VOODOO_COLORS.black} 0%, #0A0A0A 100%)`,
+      background: `linear-gradient(180deg, ${VOODOO_COLORS.black} 0%, #1A1718 100%)`,
       fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
-      color: VOODOO_COLORS.white,
+      color: VOODOO_COLORS.cream,
       padding: '12px 0',
       overflowX: 'hidden',
     }}>
@@ -930,7 +930,7 @@ export default function VoodooBracket() {
             textTransform: 'uppercase',
             letterSpacing: '2px',
             margin: 0,
-            background: `linear-gradient(135deg, ${VOODOO_COLORS.lime}, ${VOODOO_COLORS.orange})`,
+            background: `linear-gradient(135deg, ${VOODOO_COLORS.gold}, ${VOODOO_COLORS.cream})`,
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
@@ -950,16 +950,16 @@ export default function VoodooBracket() {
           textAlign: 'center',
           padding: '14px',
           margin: '0 16px 12px',
-          background: `linear-gradient(135deg, ${VOODOO_COLORS.lime}20, ${VOODOO_COLORS.purple}20)`,
+          background: `linear-gradient(135deg, ${VOODOO_COLORS.gold}20, ${VOODOO_COLORS.gold}20)`,
           borderRadius: '10px',
-          border: `2px solid ${VOODOO_COLORS.lime}`,
-          boxShadow: `0 0 25px ${VOODOO_COLORS.limeGlow}`,
+          border: `2px solid ${VOODOO_COLORS.gold}`,
+          boxShadow: `0 0 25px ${VOODOO_COLORS.goldGlow}`,
         }}>
           <div style={{ fontSize: '32px', marginBottom: '4px' }}>🏆</div>
-          <div style={{ fontSize: '15px', color: VOODOO_COLORS.orange, textTransform: 'uppercase', letterSpacing: '2px' }}>
+          <div style={{ fontSize: '15px', color: VOODOO_COLORS.cream, textTransform: 'uppercase', letterSpacing: '2px' }}>
             National Champion
           </div>
-          <div style={{ fontSize: '16px', fontWeight: 'bold', color: VOODOO_COLORS.lime, textTransform: 'uppercase' }}>
+          <div style={{ fontSize: '16px', fontWeight: 'bold', color: VOODOO_COLORS.gold, textTransform: 'uppercase' }}>
             {champion.name}
           </div>
         </div>
@@ -1037,7 +1037,7 @@ export default function VoodooBracket() {
       {/* Footer */}
       <div style={{ textAlign: 'center', marginTop: '24px', padding: '16px', color: VOODOO_COLORS.gray, fontSize: '15px' }}>
         <p style={{ margin: '0 0 4px' }}>Tap a team to pick them as the winner</p>
-        <p style={{ margin: 0, color: VOODOO_COLORS.orange, fontSize: '15px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+        <p style={{ margin: 0, color: VOODOO_COLORS.cream, fontSize: '15px', textTransform: 'uppercase', letterSpacing: '1px' }}>
           Proof of Concept • Consume & Create
         </p>
       </div>
