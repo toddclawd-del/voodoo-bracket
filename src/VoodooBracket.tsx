@@ -227,9 +227,9 @@ function BracketTeamSlot({
         cursor: isClickable ? 'pointer' : 'default',
         transition: 'all 0.15s ease',
         boxShadow: isWinner ? `0 0 8px ${VOODOO_COLORS.limeGlow}` : 'none',
-        height: '24px',
-        minWidth: '120px',
-        maxWidth: '140px',
+        height: '28px',
+        minWidth: '140px',
+        maxWidth: '160px',
       }}
       onMouseEnter={(e) => {
         if (isClickable && !isWinner) {
@@ -247,7 +247,7 @@ function BracketTeamSlot({
       {team ? (
         <>
           <span style={{
-            fontSize: '9px',
+            fontSize: '15px',
             fontWeight: 'bold',
             color: VOODOO_COLORS.purple,
             minWidth: '14px',
@@ -257,7 +257,7 @@ function BracketTeamSlot({
           <span style={{
             color: isWinner ? VOODOO_COLORS.lime : VOODOO_COLORS.white,
             fontWeight: isWinner ? 'bold' : 'normal',
-            fontSize: '10px',
+            fontSize: '16px',
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
@@ -266,7 +266,7 @@ function BracketTeamSlot({
           </span>
         </>
       ) : (
-        <span style={{ color: VOODOO_COLORS.gray, fontSize: '9px' }}>TBD</span>
+        <span style={{ color: VOODOO_COLORS.gray, fontSize: '15px' }}>TBD</span>
       )}
     </div>
   )
@@ -411,7 +411,7 @@ function RegionBracket({
         marginBottom: '8px',
       }}>
         <span style={{
-          fontSize: '10px',
+          fontSize: '16px',
           fontWeight: 'bold',
           color: VOODOO_COLORS.lime,
           textTransform: 'uppercase',
@@ -460,7 +460,7 @@ function FinalFourBracket({
         marginBottom: '4px',
       }}>
         <span style={{
-          fontSize: '11px',
+          fontSize: '15px',
           fontWeight: 'bold',
           color: VOODOO_COLORS.lime,
           textTransform: 'uppercase',
@@ -490,7 +490,7 @@ function FinalFourBracket({
           gap: '4px',
         }}>
           <span style={{
-            fontSize: '9px',
+            fontSize: '15px',
             color: VOODOO_COLORS.orange,
             textTransform: 'uppercase',
             letterSpacing: '1px',
@@ -561,10 +561,10 @@ function MobileTeamSlot({
             alignItems: 'center',
             justifyContent: 'center',
             width: '24px',
-            height: '24px',
+            height: '28px',
             background: VOODOO_COLORS.purple,
             borderRadius: '50%',
-            fontSize: '11px',
+            fontSize: '15px',
             fontWeight: 'bold',
             color: VOODOO_COLORS.white,
             flexShrink: 0,
@@ -574,7 +574,7 @@ function MobileTeamSlot({
           <span style={{
             color: isWinner ? VOODOO_COLORS.lime : VOODOO_COLORS.white,
             fontWeight: isWinner ? 'bold' : 'normal',
-            fontSize: '13px',
+            fontSize: '15px',
             textTransform: 'uppercase',
           }}>
             {team.name}
@@ -582,7 +582,7 @@ function MobileTeamSlot({
           {isWinner && <span style={{ marginLeft: 'auto' }}>💀</span>}
         </>
       ) : (
-        <span style={{ color: VOODOO_COLORS.gray, fontSize: '12px' }}>TBD</span>
+        <span style={{ color: VOODOO_COLORS.gray, fontSize: '16px' }}>TBD</span>
       )}
     </div>
   )
@@ -655,7 +655,7 @@ function RoundIndicator({
               : VOODOO_COLORS.white,
             border: 'none',
             borderRadius: '14px',
-            fontSize: '9px',
+            fontSize: '15px',
             fontWeight: 'bold',
             textTransform: 'uppercase',
             cursor: 'pointer',
@@ -756,7 +756,7 @@ function RegionLabel({ name }: { name: string }) {
       marginBottom: '10px',
     }}>
       <span style={{
-        fontSize: '11px',
+        fontSize: '15px',
         fontWeight: 'bold',
         color: VOODOO_COLORS.lime,
         textTransform: 'uppercase',
@@ -895,7 +895,7 @@ export default function VoodooBracket() {
             background: `linear-gradient(135deg, ${VOODOO_COLORS.lime}30, ${VOODOO_COLORS.purple}30)`,
             borderRadius: '10px',
           }}>
-            <span style={{ fontSize: '13px', fontWeight: 'bold', color: VOODOO_COLORS.lime, textTransform: 'uppercase' }}>
+            <span style={{ fontSize: '15px', fontWeight: 'bold', color: VOODOO_COLORS.lime, textTransform: 'uppercase' }}>
               {roundName}
             </span>
           </div>
@@ -939,7 +939,7 @@ export default function VoodooBracket() {
           </h1>
           <span style={{ fontSize: '24px' }}>💀</span>
         </div>
-        <p style={{ color: VOODOO_COLORS.gray, fontSize: '10px', textTransform: 'uppercase', letterSpacing: '1px', margin: 0 }}>
+        <p style={{ color: VOODOO_COLORS.gray, fontSize: '16px', textTransform: 'uppercase', letterSpacing: '1px', margin: 0 }}>
           March Madness 2026 • 64 Teams
         </p>
       </div>
@@ -956,7 +956,7 @@ export default function VoodooBracket() {
           boxShadow: `0 0 25px ${VOODOO_COLORS.limeGlow}`,
         }}>
           <div style={{ fontSize: '32px', marginBottom: '4px' }}>🏆</div>
-          <div style={{ fontSize: '9px', color: VOODOO_COLORS.orange, textTransform: 'uppercase', letterSpacing: '2px' }}>
+          <div style={{ fontSize: '15px', color: VOODOO_COLORS.orange, textTransform: 'uppercase', letterSpacing: '2px' }}>
             National Champion
           </div>
           <div style={{ fontSize: '16px', fontWeight: 'bold', color: VOODOO_COLORS.lime, textTransform: 'uppercase' }}>
@@ -966,14 +966,14 @@ export default function VoodooBracket() {
       )}
 
       {/* Progress */}
-      <div style={{ textAlign: 'center', marginBottom: '8px', color: VOODOO_COLORS.gray, fontSize: '10px' }}>
+      <div style={{ textAlign: 'center', marginBottom: '8px', color: VOODOO_COLORS.gray, fontSize: '16px' }}>
         {matchups.filter(m => m.winner).length} / {matchups.length} picks made
       </div>
 
       {isMobile ? (
         <>
           <RoundIndicator rounds={ROUNDS} currentRound={currentRound} onSelectRound={setCurrentRound} />
-          <div style={{ textAlign: 'center', color: VOODOO_COLORS.gray, fontSize: '9px', marginBottom: '10px' }}>
+          <div style={{ textAlign: 'center', color: VOODOO_COLORS.gray, fontSize: '15px', marginBottom: '10px' }}>
             👈 Swipe or tap rounds 👉
           </div>
           <SwipeContainer currentIndex={currentRound} totalSlides={6} onSwipe={handleSwipe}>
@@ -1035,9 +1035,9 @@ export default function VoodooBracket() {
       )}
 
       {/* Footer */}
-      <div style={{ textAlign: 'center', marginTop: '24px', padding: '16px', color: VOODOO_COLORS.gray, fontSize: '11px' }}>
+      <div style={{ textAlign: 'center', marginTop: '24px', padding: '16px', color: VOODOO_COLORS.gray, fontSize: '15px' }}>
         <p style={{ margin: '0 0 4px' }}>Tap a team to pick them as the winner</p>
-        <p style={{ margin: 0, color: VOODOO_COLORS.orange, fontSize: '9px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+        <p style={{ margin: 0, color: VOODOO_COLORS.orange, fontSize: '15px', textTransform: 'uppercase', letterSpacing: '1px' }}>
           Proof of Concept • Consume & Create
         </p>
       </div>
