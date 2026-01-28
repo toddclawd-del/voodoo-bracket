@@ -724,19 +724,17 @@ export default function VoodooBracket() {
     }}>
       {/* Header */}
       <div style={{ textAlign: 'center', marginBottom: '16px', padding: '0 16px' }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
-          <span style={{ fontSize: '28px' }}>🍺</span>
-          <h1 style={{
-            fontSize: 'clamp(20px, 4vw, 36px)', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', margin: 0,
-            background: `linear-gradient(135deg, ${VOODOO_COLORS.gold}, ${VOODOO_COLORS.cream})`,
-            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-          }}>
-            Voodoo Bracket
-          </h1>
-          <span style={{ fontSize: '28px' }}>🍺</span>
-        </div>
+        <img 
+          src="/march-rangerousness.png" 
+          alt="March Rangerousness 2026" 
+          style={{ 
+            maxWidth: 'min(320px, 80vw)', 
+            height: 'auto',
+            marginBottom: '8px',
+          }} 
+        />
         <p style={{ color: VOODOO_COLORS.gray, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1.5px', margin: 0 }}>
-          March Madness 2026 • 64 Teams
+          64 Teams • Pick Your Champion
         </p>
       </div>
 
