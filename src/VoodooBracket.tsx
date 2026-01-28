@@ -606,6 +606,13 @@ export default function VoodooBracket() {
   const [currentRound, setCurrentRound] = useState(0)
   const [isMobile, setIsMobile] = useState(false)
   const [bracketScale, setBracketScale] = useState(1)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    // Show loader briefly then reveal bracket
+    const timer = setTimeout(() => setIsLoading(false), 1500)
+    return () => clearTimeout(timer)
+  }, [])
 
   useEffect(() => {
     const checkSize = () => {
@@ -720,6 +727,42 @@ export default function VoodooBracket() {
       )
     }
   })
+
+  if (isLoading) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        background: `linear-gradient(180deg, ${VOODOO_COLORS.black} 0%, #1A1718 100%)`,
+        fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '24px',
+      }}>
+        <img 
+          src="/march-rangerousness.png" 
+          alt="March Rangerousness 2026" 
+          style={{ maxWidth: '280px', height: 'auto', opacity: 0.9 }} 
+        />
+        <p style={{
+          color: VOODOO_COLORS.gold,
+          fontSize: '18px',
+          fontStyle: 'italic',
+          textAlign: 'center',
+          animation: 'pulse 1.5s ease-in-out infinite',
+        }}>
+          Voodoo Ranger shooting a free throw...
+        </p>
+        <style>{`
+          @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+          }
+        `}</style>
+      </div>
+    )
+  }
 
   return (
     <div style={{
