@@ -771,12 +771,30 @@ export default function VoodooBracket() {
   const [matchups, setMatchups] = useState<Matchup[]>(buildInitialMatchups)
   const [currentRound, setCurrentRound] = useState(0)
   const [isMobile, setIsMobile] = useState(false)
+  const [bracketScale, setBracketScale] = useState(1)
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 1200)
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
+    const checkSize = () => {
+      const width = window.innerWidth
+      setIsMobile(width < 900)
+      
+      // Scale bracket for different desktop sizes
+      // Full bracket is ~1400px wide
+      if (width >= 1600) {
+        setBracketScale(1)
+      } else if (width >= 1400) {
+        setBracketScale(0.9)
+      } else if (width >= 1200) {
+        setBracketScale(0.8)
+      } else if (width >= 1000) {
+        setBracketScale(0.7)
+      } else if (width >= 900) {
+        setBracketScale(0.6)
+      }
+    }
+    checkSize()
+    window.addEventListener('resize', checkSize)
+    return () => window.removeEventListener('resize', checkSize)
   }, [])
 
   const handleSelectWinner = (matchupId: string, winner: Team) => {
@@ -983,7 +1001,7 @@ export default function VoodooBracket() {
       ) : (
         /* Desktop Bracket View */
         <div style={{ 
-          overflowX: 'auto', 
+          overflow: 'hidden', 
           padding: '10px 20px',
           display: 'flex',
           justifyContent: 'center',
@@ -992,7 +1010,8 @@ export default function VoodooBracket() {
             display: 'flex', 
             alignItems: 'flex-start', 
             gap: '8px', 
-            minWidth: 'max-content',
+            transform: `scale(${bracketScale})`,
+            transformOrigin: 'top center',
           }}>
             {/* Left Side - South & East */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
